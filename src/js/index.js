@@ -19,15 +19,19 @@ const controlSearch = async () => {
         state.search = new Search(query);
 
         //3 prepare UI for results
+          //clearing search field
+        searchView.clearInput();
+          //clearing results tab
+          searchView.clearResults();
+          searchView.renderLoader(elements.searchRes);
 
         //4 search
         await state.search.getResult();
 
         //display search results
-
+        searchView.removeLoader();
         searchView.renderResults(state.search.result);
-        //clearing search field
-        searchView.clearInput();
+        
     }
 }
 
