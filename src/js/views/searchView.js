@@ -4,8 +4,12 @@ export const getInput = () => elements.searchField.value;
 
 export const clearInput = () => elements.searchField.value = '';
 
-export const clearResults = () => elements.searchResList.innerHTML = '';
+export const clearResults = () => {
+    elements.searchResList.innerHTML = '';
+    elements.searchResPages.innerHTML = '';
+};
 
+//limit of title length of recipes that displays in left tab 
 const limitRecipeTitle = (title, limit = 18) => {
     let newTitle = [];
     if(title.length > limit) {
@@ -56,8 +60,47 @@ const renderRecipe = recipe => {
 
             
 
+};
+
+const createButton = (page, type) => `
+    <button class="btn-inline results__btn--${type}" data-goto=${type === 'prev' ? page - 1 : page + 1}>
+        <span>Page ${type === 'prev' ? page - 1 : page + 1}</span>
+        <svg class="search__icon">
+            <use href="img/icons.svg#icon-triangle-${type === 'prev' ? 'left' : 'right'}"></use>
+        </svg>
+    </button>
+`;
+
+const renderButtons = (page, numResults, resPerPage) => {
+    //calculating number of pages for displaying
+    const pages = Math.ceil(numResults / resPerPage);
+
+    let button;
+
+    //generating results page controls based on quantity of recipes
+
+    if(page === 1 && pages > 1) {
+       //if it's the first page of many
+       button = createButton(page, 'next');
+    } else if (page < pages){
+        //if it's some page in a massive of pages
+        button = `
+        ${button = createButton(page, 'next')}
+        ${button = createButton(page, 'prev')}
+        `;
+    } else if (page === pages && pages > 1){
+        //for last page of all
+        button = createButton(page, 'prev');
+    }
+    elements.searchResPages.insertAdjacentHTML('afterbegin', button);
 }
 
-export const renderResults = recipes => {
-    recipes.forEach(renderRecipe);
+export const renderResults = (recipes, page = 1, resPerPage = 10) => {
+    //start and end points for slice method
+    const start = (page - 1) * resPerPage;
+    const end = page * resPerPage;
+    //click on 'prev' or 'next' buttons will change start&end points
+    recipes.slice(start, end).forEach(renderRecipe);
+
+    renderButtons(page, recipes.length, resPerPage);
 }
