@@ -9,6 +9,17 @@ export const clearResults = () => {
     elements.searchResPages.innerHTML = '';
 };
 
+export const highlightSelected = id => {
+
+    const arrRes = Array.from(document.querySelectorAll('.results__link'));
+
+    arrRes.forEach(el => {
+        el.classList.remove('results__link--active');
+    })
+
+    document.querySelector(`a[href="#${id}"]`).classList.add('results__link--active');
+}
+
 //limit of title length of recipes that displays in left tab 
 const limitRecipeTitle = (title, limit = 18) => {
     let newTitle = [];

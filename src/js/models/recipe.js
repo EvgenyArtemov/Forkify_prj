@@ -43,13 +43,20 @@ export default class Recipe {
             //parse ing into count 
             let arrIng = ingredient.split(' ');
             const unitIndex = arrIng.findIndex(el2 => units.includes(el2));
+            console.log(arrIng);
+            console.log(unitIndex);
 
             let objIng;
             if (unitIndex > -1) {
                 // There is a unit
                 // Ex. 4 1/2 cups, arrCount is [4, 1/2] --> eval("4+1/2") --> 4.5
                 // Ex. 4 cups, arrCount is [4]
-                const arrCount = arrIng.slice(0, unitIndex);
+
+                const arrCount = arrIng.filter(el3 => {
+                    // Regexp matches only integers and partials
+                    const regexp = /((?:[1-9][0-9]*|0)(?![a-zA-Z]))(?:\/[1-9][0-9]*)?/g;
+                    return regexp.test(el3);           
+                });
                 
                 let count;
                 if (arrCount.length === 1) {
